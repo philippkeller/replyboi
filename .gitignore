@@ -1,0 +1,25 @@
+# Build artifacts
+replyboi-extension.zip
+*.zip
+
+# Generated store assets (screenshots, promo images)
+store-assets/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor directories
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Node (if used)
+node_modules/
+npm-debug.log*
+
+# Logs
+*.log
+
