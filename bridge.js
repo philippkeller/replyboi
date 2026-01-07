@@ -24,17 +24,5 @@
     }
   });
 
-  // Sync localStorage with chrome.storage periodically
-  let lastKnownCount = localStorage.getItem('replyboi_count') || '0';
-  
-  setInterval(() => {
-    const currentCount = localStorage.getItem('replyboi_count') || '0';
-    if (currentCount !== lastKnownCount) {
-      lastKnownCount = currentCount;
-      chrome.runtime.sendMessage({
-        type: 'SYNC_COUNT',
-        count: parseInt(currentCount, 10)
-      });
-    }
-  }, 500);
+  // REMOVED: No more polling. Events are enough.
 })();

@@ -1,11 +1,12 @@
 {
   "manifest_version": 3,
   "name": "ReplyBoi",
-  "version": "1.0.0",
-  "description": "Count your replies on X (Twitter)",
+  "version": "1.2.0",
+  "description": "Count your daily replies on X (Twitter)",
   "permissions": [
     "storage",
-    "scripting"
+    "scripting",
+    "alarms"
   ],
   "host_permissions": [
     "https://x.com/*",

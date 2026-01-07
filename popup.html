@@ -14,9 +14,11 @@
     body {
       font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
       width: 280px;
+      max-height: 450px;
       background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 100%);
       color: #e7e9ea;
       padding: 20px;
+      overflow-y: auto;
     }
 
     .container {
@@ -63,13 +65,43 @@
     .count {
       font-size: 56px;
       font-weight: 800;
-      background: linear-gradient(135deg, #1DA1F2, #00D4AA);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
       line-height: 1;
       transition: transform 0.15s ease;
     }
+
+    .count.red { color: #ef4444; }
+    .count.orange { color: #f97316; }
+    .count.green { color: #22c55e; }
+
+    .goal-text {
+      font-size: 14px;
+      color: #71767b;
+      margin-top: 8px;
+    }
+
+    .goal-text span {
+      color: #e7e9ea;
+      font-weight: 600;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+
+    .progress-fill.red { background: #ef4444; }
+    .progress-fill.orange { background: #f97316; }
+    .progress-fill.green { background: #22c55e; }
 
     .subtitle {
       font-size: 13px;
@@ -77,32 +109,100 @@
       margin-top: 4px;
     }
 
-    .btn-reset {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #e7e9ea;
-      padding: 10px 24px;
-      border-radius: 9999px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
+    .goal-setting {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       width: 100%;
+      justify-content: center;
     }
 
-    .btn-reset:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.3);
+    .goal-setting label {
+      font-size: 13px;
+      color: #71767b;
     }
 
-    .btn-reset:active {
-      transform: scale(0.98);
+    .goal-input {
+      width: 60px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.05);
+      color: #e7e9ea;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .goal-input:focus {
+      outline: none;
+      border-color: #1DA1F2;
+    }
+
+    .history-section {
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .history-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #71767b;
+      margin-bottom: 8px;
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .history-table th,
+    .history-table td {
+      padding: 8px 12px;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .history-table th {
+      color: #71767b;
+      font-weight: 500;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .history-table td {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .history-table td:last-child {
+      text-align: right;
+      font-weight: 600;
+    }
+
+    .history-table td.red { color: #ef4444; }
+    .history-table td.orange { color: #f97316; }
+    .history-table td.green { color: #22c55e; }
+
+    .history-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .no-history {
+      font-size: 13px;
+      color: #536471;
+      text-align: center;
+      padding: 12px;
     }
 
     .version {
       font-size: 11px;
       color: #536471;
-      margin-top: 4px;
+      margin-top: 8px;
+    }
+
+    .reset-note {
+      font-size: 11px;
+      color: #536471;
+      text-align: center;
     }
   </style>
 </head>
@@ -113,14 +213,37 @@
     </div>
 
     <div class="count-container">
-      <span class="count-label">Replies Sent</span>
+      <span class="count-label">Today's Replies</span>
       <span class="count" id="count">0</span>
-      <span class="subtitle">and counting...</span>
+      <div class="goal-text">Goal: <span id="goalDisplay">20</span></div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
     </div>
 
-    <button class="btn-reset" id="resetBtn">Reset Counter</button>
+    <div class="goal-setting">
+      <label for="goalInput">Daily goal:</label>
+      <input type="number" id="goalInput" class="goal-input" min="1" max="999" value="20">
+    </div>
+
+    <div class="history-section">
+      <div class="history-title">History</div>
+      <table class="history-table" id="historyTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Replies</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody">
+        </tbody>
+      </table>
+      <div class="no-history" id="noHistory">No history yet</div>
+    </div>
+
+    <p class="reset-note">Resets daily at 4:00 AM</p>
     
-    <span class="version">v1.0.0</span>
+    <span class="version">v1.2.0</span>
   </div>
 
   <script src="popup.js"></script>
